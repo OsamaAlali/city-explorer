@@ -3,6 +3,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import Card from 'react-bootstrap/Card'
+import Error from '../components/Error'
 
 export class Main extends Component {
     constructor(props){
@@ -11,7 +12,8 @@ export class Main extends Component {
         this.state={
             cityName:'',
             cityData: {},
-            displayData: false
+            displayData: false,
+            hassError: false
         }
     }//end constructor
 
@@ -23,20 +25,33 @@ export class Main extends Component {
           })
         }
 
-        gitCityDate=async (e)=>{
-            e.preventDefault();
+       gitCityDate=async (e)=>{
+          try { e.preventDefault();
+           
          const axiosRespond=await axios.get(`https://us1.locationiq.com/v1/search.php?key=pk.832de4f31ebdd818d7f49b06b63b57ef&city=${this.state.cityName}&format=json`);
-       
-         console.log(axiosRespond.data[0]);
+        
+
+         console.log('axios Respon',axiosRespond);
          this.setState({
              cityData:axiosRespond.data[0],
-             displayData: true
+             displayData: true,
+           hassError:false
+             
          })
+        }
+        catch(error){
+            console.log(this.state.hassError);
+            this.setState({
+                hassError: true,
+               
+            })
+            console.log(this.state.hassError);
+        }
         }
 
     render() {
         return (
-            <div>
+            <main>
                 
   <Form onSubmit={this.gitCityDate} >
   <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -47,12 +62,14 @@ export class Main extends Component {
 
   
   <Button variant="primary" type="submit">
-    Submit
+  Explore
   </Button>
 
 </Form>
-       
-{ this.state.displayData &&
+       {this.state.hassError &&  <Error show={this.state.hassError}/> }
+      
+      
+{ this.state.displayData && !this.state.hassError &&
         
 <Card>
   <Card.Header>{this.state.cityName}</Card.Header>
@@ -65,7 +82,7 @@ export class Main extends Component {
 
     }
 
-            </div>
+</main>
         )
     }
 }
