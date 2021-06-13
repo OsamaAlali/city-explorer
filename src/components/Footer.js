@@ -3,9 +3,7 @@ import React, { Component } from 'react'
 export class Footer extends Component {
     render() {
         return (
-            <div>
-                
-            </div>
+          <footer> &copy;2021 </footer>
         )
     }
 }
