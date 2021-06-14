@@ -13,7 +13,9 @@ export class Main extends Component {
             cityName:'',
             cityData: {},
             displayData: false,
-            hassError: false
+            hassError: false,
+            weatherData: [],
+
         }
     }//end constructor
 
@@ -28,27 +30,32 @@ export class Main extends Component {
        gitCityDate=async (e)=>{
           try { e.preventDefault();
            
-         const axiosRespond=await axios.get(`https://us1.locationiq.com/v1/search.php?key=pk.832de4f31ebdd818d7f49b06b63b57ef&city=${this.state.cityName}&format=json`);
-        
+         const axiosRespond=await axios.get(`https://us1.locationiq.com/v1/search.php?key=pk.d36871f015649f915282f374cff76628&city=${this.state.cityName}&format=json`);
+         
+          const myApiRes= await axios.get(`${process.env.REACT_APP_URL}/weather`);
 
+     console.log('aaaaaaaaaaaaaaaaa',myApiRes);
          console.log('axios Respon',axiosRespond);
          this.setState({
              cityData:axiosRespond.data[0],
              displayData: true,
-           hassError:false
+           hassError:false,
+           weatherData: myApiRes.data.data,
              
          })
         }
+       
         catch(error){
             console.log(this.state.hassError);
             this.setState({
                 hassError: true,
                
             })
+            console.log('watherrrrrrrr',this.state.weatherData);
             console.log(this.state.hassError);
         }
         }
-
+       
     render() {
         return (
             <main>
@@ -76,12 +83,35 @@ export class Main extends Component {
   <Card.Body>
     <Card.Title>{this.state.cityData.display_name}</Card.Title>
     
-    <Card.Img src={`https://maps.locationiq.com/v3/staticmap?key=pk.d36871f015649f915282f374cff76628&q&center=${this.state.cityData.lat},${this.state.cityData.lon}&zoom=15`} alt=''   />
+    <Card.Img src={`https://maps.locationiq.com/v3/staticmap?key=pk.d36871f015649f915282f374cff76628&center=${this.state.cityData.lat},${this.state.cityData.lon}&zoom=15`} alt=''   />
   </Card.Body>
 </Card>
-
+     
+     
+     
     }
 
+{          this.state.displayData && !this.state.hassError        &&
+  this.state.weatherData.map((item) => {
+    return(
+      <>
+      <p>Name {item.weather.code} </p>
+    
+      <p>LON: {item.wind_cdir_full} </p>
+      
+      
+         </>
+
+    
+    
+    
+    
+      ) 
+  
+  })
+        
+ 
+ }
 </main>
         )
     }
