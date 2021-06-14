@@ -30,7 +30,7 @@ export class Main extends Component {
        gitCityDate=async (e)=>{
           try { e.preventDefault();
            
-         const axiosRespond=await axios.get(`https://us1.locationiq.com/v1/search.php?key=pk.d36871f015649f915282f374cff76628&city=${this.state.cityName}&format=json`);
+         const axiosRespond=await axios.get(`https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_KEY}&city=${this.state.cityName}&format=json`);
          
           const myApiRes= await axios.get(`${process.env.REACT_APP_URL}/weather`);
 
@@ -83,7 +83,7 @@ export class Main extends Component {
   <Card.Body>
     <Card.Title>{this.state.cityData.display_name}</Card.Title>
     
-    <Card.Img src={`https://maps.locationiq.com/v3/staticmap?key=pk.d36871f015649f915282f374cff76628&center=${this.state.cityData.lat},${this.state.cityData.lon}&zoom=15`} alt=''   />
+    <Card.Img src={`https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_KEY}&center=${this.state.cityData.lat},${this.state.cityData.lon}&zoom=15`} alt=''   />
   </Card.Body>
 </Card>
      
