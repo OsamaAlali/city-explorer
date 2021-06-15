@@ -12,10 +12,12 @@ export class Main extends Component {
         this.state={
             cityName:'',
             cityData: {},
+            lat:'',
+            lon:'',
             displayData: false,
             hassError: false,
-            weatherData: [],
-
+            weatherData: '',
+            
         }
     }//end constructor
 
@@ -30,29 +32,32 @@ export class Main extends Component {
        gitCityDate=async (e)=>{
           try { e.preventDefault();
            
-         const axiosRespond=await axios.get(`https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_KEY}&city=${this.state.cityName}&format=json`);
-         
-          const myApiRes= await axios.get(`${process.env.REACT_APP_URL}/weather`);
+         await axios.get(`https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_KEY}&city=${this.state.cityName}&format=json`).then( locationResponde =>{
 
-     console.log('aaaaaaaaaaaaaaaaa',myApiRes);
-         console.log('axios Respon',axiosRespond);
-         this.setState({
-             cityData:axiosRespond.data[0],
-             displayData: true,
-           hassError:false,
-           weatherData: myApiRes.data.data,
-             
+          this.setState({
+            cityData: locationResponde.data[0],
+            displayData: true,
+            hassError:false,
+          lat: locationResponde.data[0].lat,
+          lon:locationResponde.data[0].lon,
+            
+        })
          })
-        }
-       
-        catch(error){
+        
+        await axios.get(`${process.env.REACT_APP_URL}/weather`).then(weatherResponse => {
+          this.setState({
+            weatherData: weatherResponse.data,
+            displayData: true
+
+        })
+        }}
+      catch(error){
             console.log(this.state.hassError);
             this.setState({
                 hassError: true,
                
             })
-            console.log('watherrrrrrrr',this.state.weatherData);
-            console.log(this.state.hassError);
+           
         }
         }
        
@@ -92,12 +97,12 @@ export class Main extends Component {
     }
 
 {          this.state.displayData && !this.state.hassError        &&
-  this.state.weatherData.map((item) => {
+  this.state.weatherData.map((obj=> {
     return(
       <>
-      <p>Name {item.weather.code} </p>
+      <p>description {obj.description} </p>
     
-      <p>LON: {item.wind_cdir_full} </p>
+      <p>date: {obj.date} </p>
       
       
          </>
