@@ -17,6 +17,7 @@ export class Main extends Component {
       displayData: false,
       hassError: false,
       weatherData: [],
+      moviesData: [],
     };
   } //end constructor
 
@@ -59,6 +60,18 @@ export class Main extends Component {
             displayData: true,
           });
         });
+         //////////////
+         //git Movie DATA
+         //////////////
+         
+        await axios.get(`${process.env.REACT_APP_URL}/movies?query=${this.state.cityName}`).then((movieRespons)=>{
+             this.setState({
+               moviesData: movieRespons.data
+             })
+
+        })
+
+
     } catch (error) {
       console.log(this.state.hassError);
       this.setState({
@@ -99,8 +112,6 @@ export class Main extends Component {
             </Card.Body>
           </Card>
         )}
-
-        {console.log("waether", this.state.weatherData)}
         {this.state.displayData &&
           !this.state.hassError &&
           this.state.weatherData.map((obj) => {
@@ -112,6 +123,32 @@ export class Main extends Component {
               </>
             );
           })}
+
+{this.state.displayData && !this.state.hassError && (
+          this.state.moviesData.map((obj)=>{
+          return(
+          <Card>
+            <Card.Header> {obj.title} </Card.Header>
+            <Card.Body>
+             Story :{obj.overview}
+             <Card.Img
+                src={`${obj.poster_path}`}
+                alt=""
+              />
+ <Card.Img
+                src={`https://image.tmdb.org/t/p/w500${obj.poster_path}`}
+                alt=""
+              />
+             <hr />
+             Vote:{obj.vote_count} <br />
+             Popularity :{obj.popularity} <br />
+             Release_date:{obj.release_date} <br />
+            </Card.Body>
+          </Card>
+        )
+      })
+        )}
+
       </main>
     );
   }
