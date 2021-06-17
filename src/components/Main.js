@@ -58,6 +58,7 @@ export class Main extends Component {
           this.setState({
             weatherData: weatherResponse.data,
             displayData: true,
+          
           });
         });
          //////////////
@@ -73,7 +74,8 @@ export class Main extends Component {
 
 
     } catch (error) {
-      console.log(this.state.hassError);
+    console.log(this.state.hassError);
+   console.log(error);
       this.setState({
         hassError: true,
       });
