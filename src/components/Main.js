@@ -112,7 +112,7 @@ export class Main extends Component {
             />
           )}
         </div>
-
+       {/* ///////////////////////*/} 
         {/* ///////////////////////*/}
         {/* Called Weather componets*/}
         {/* ///////////////////////*/}
