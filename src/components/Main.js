@@ -4,6 +4,9 @@ import Button from "react-bootstrap/Button";
 import axios from "axios";
 import Card from "react-bootstrap/Card";
 import Error from "../components/Error";
+import Movies from "../components/Movies";
+import Weather from "../components/Weather";
+import Map from "../components/Map";
 
 export class Main extends Component {
   constructor(props) {
@@ -30,9 +33,8 @@ export class Main extends Component {
   };
 
   gitCityDate = async (e) => {
-      console.log("gitCityDate");
+    console.log("gitCityDate");
     try {
-
       e.preventDefault();
 
       await axios
@@ -60,20 +62,18 @@ export class Main extends Component {
             displayData: true,
           });
         });
-         //////////////
-         //git Movie DATA
-         //////////////
-         
-        await axios.get(`${process.env.REACT_APP_URL}/movies?query=${this.state.cityName}`).then((movieRespons)=>{
-             this.setState({
-               moviesData: movieRespons.data
-             })
+      //////////////
+      //git Movie DATA
+      //////////////
 
-        })
-
-
+      await axios
+        .get(`${process.env.REACT_APP_URL}/movies?query=${this.state.cityName}`)
+        .then((movieRespons) => {
+          this.setState({
+            moviesData: movieRespons.data,
+          });
+        });
     } catch (error) {
-      console.log(this.state.hassError);
       this.setState({
         hassError: true,
       });
@@ -97,58 +97,43 @@ export class Main extends Component {
             Explore
           </Button>
         </Form>
-        {this.state.hassError && <Error show={this.state.hassError} />}
 
-        {this.state.displayData && !this.state.hassError && (
-          <Card>
-            <Card.Header>{this.state.cityName}</Card.Header>
-            <Card.Body>
-              <Card.Title>{this.state.cityData.display_name}</Card.Title>
+        {/* ///////////////////////*/}
+        {/* Called Map componets*/}
+        {/* ///////////////////////*/}
 
-              <Card.Img
-                src={`https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_KEY}&center=${this.state.cityData.lat},${this.state.cityData.lon}&zoom=15`}
-                alt=""
-              />
-            </Card.Body>
-          </Card>
-        )}
-        {this.state.displayData &&
-          !this.state.hassError &&
-          this.state.weatherData.map((obj) => {
-            return (
-              <>
-                <p>description:{obj.description} </p>
+        <div className="mapComponent">
+          {this.state.hassError && <Error show={this.state.hassError} />}
 
-                <p>date:{obj.date} </p>
-              </>
-            );
-          })}
+          {this.state.displayData && !this.state.hassError && (
+            <Map
+              cityName={this.state.cityName}
+              cityData={this.state.cityData}
+            />
+          )}
+        </div>
 
-{this.state.displayData && !this.state.hassError && (
-          this.state.moviesData.map((obj)=>{
-          return(
-          <Card>
-            <Card.Header> {obj.title} </Card.Header>
-            <Card.Body>
-             Story :{obj.overview}
-             <Card.Img
-                src={`${obj.poster_path}`}
-                alt=""
-              />
- <Card.Img
-                src={`https://image.tmdb.org/t/p/w500${obj.poster_path}`}
-                alt=""
-              />
-             <hr />
-             Vote:{obj.vote_count} <br />
-             Popularity :{obj.popularity} <br />
-             Release_date:{obj.release_date} <br />
-            </Card.Body>
-          </Card>
-        )
-      })
-        )}
+        {/* ///////////////////////*/}
+        {/* Called Weather componets*/}
+        {/* ///////////////////////*/}
 
+        <div className="container-weather-card">
+          {this.state.displayData &&
+            !this.state.hassError &&
+            this.state.weatherData.map((obj) => {
+              return <Weather obj={obj} cityName={this.state.cityName} />;
+            })}
+        </div>
+        {/* ///////////////////////*/}
+        {/* Called Moives componets*/}
+        {/* ///////////////////////*/}
+        <div>
+          {this.state.displayData &&
+            !this.state.hassError &&
+            this.state.moviesData.map((obj) => {
+              return <Movies obj={obj} />;
+            })}
+        </div>
       </main>
     );
   }
