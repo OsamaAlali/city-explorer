@@ -4,7 +4,7 @@ import Card from "react-bootstrap/Card";
 export class Map extends Component {
     render() {
         return (
-            
+             <div className="mapComponent"> 
             <div  className="map-card" >
                  <Card>
             <Card.Header>{this.props.cityName}</Card.Header>
@@ -19,7 +19,7 @@ export class Map extends Component {
           </Card>
             </div>
 
-        
+        </div>
         )
     }
 }

@@ -7,7 +7,7 @@ export class Error extends Component {
             <Alert show={this.props.show} variant="success">
             <Alert.Heading>Error</Alert.Heading>
             <p>
-            Please Enter the City name 
+         fixed Your Problem First
             </p>
             <hr />
            
