@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
-import Card from "react-bootstrap/Card";
+import WeatherRender from "../components/WeatherRender";
 import Error from "../components/Error";
 import Movies from "../components/Movies";
 import Weather from "../components/Weather";
 import Map from "../components/Map";
-
+import Search from "../components/Search";
 export class Main extends Component {
   constructor(props) {
     super(props);
@@ -19,6 +19,7 @@ export class Main extends Component {
       lon: "",
       displayData: false,
       hassError: false,
+      showMovies: false,
       weatherData: [],
       moviesData: [],
     };
@@ -30,6 +31,30 @@ export class Main extends Component {
     this.setState({
       cityName: e.target.value,
     });
+  };
+
+  showMovies = (e) => {
+    //////////////
+    //git Movie DATA
+    //////////////
+    try {
+      axios
+        .get(`${process.env.REACT_APP_URL}/movies?query=${this.state.cityName}`)
+        .then((movieRespons) => {
+       
+          this.setState({
+            showMovies: true,
+            hassError: false,
+            displayData: false,
+            moviesData: movieRespons.data,
+          });
+        });
+    } catch (error) {
+      this.setState({
+        hassError: true,
+        showMovies: false,
+      });
+    }
   };
 
   gitCityDate = async (e) => {
@@ -44,6 +69,7 @@ export class Main extends Component {
         .then((locationResponde) => {
           this.setState({
             cityData: locationResponde.data[0],
+            showMovies: false,
             displayData: true,
             hassError: false,
             lat: locationResponde.data[0].lat,
@@ -57,20 +83,10 @@ export class Main extends Component {
         )
         .then((weatherResponse) => {
           console.log("axios", this.state.weatherData);
+        
           this.setState({
             weatherData: weatherResponse.data,
             displayData: true,
-          });
-        });
-      //////////////
-      //git Movie DATA
-      //////////////
-
-      await axios
-        .get(`${process.env.REACT_APP_URL}/movies?query=${this.state.cityName}`)
-        .then((movieRespons) => {
-          this.setState({
-            moviesData: movieRespons.data,
           });
         });
     } catch (error) {
@@ -83,57 +99,53 @@ export class Main extends Component {
   render() {
     return (
       <main>
-        <Form onSubmit={this.gitCityDate}>
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>City Name</Form.Label>
-            <Form.Control
-              type="text"
-              onChange={this.gitCityName}
-              placeholder="Enter name"
-            />
-          </Form.Group>
+        <Search
+          gitCityDate={this.gitCityDate}
+          gitCityName={this.gitCityName}
+          showMovies={this.showMovies}
+        />
 
-          <Button variant="primary" type="submit">
-            Explore
-          </Button>
-        </Form>
+        {this.state.hassError && (
+          <Error
+            show={this.state.hassError}
+            message={this.state.errorMessage}
+          />
+        )}
 
         {/* ///////////////////////*/}
+
         {/* Called Map componets*/}
         {/* ///////////////////////*/}
 
-        <div className="mapComponent">
-          {this.state.hassError && <Error show={this.state.hassError} />}
-
-          {this.state.displayData && !this.state.hassError && (
-            <Map
-              cityName={this.state.cityName}
-              cityData={this.state.cityData}
-            />
-          )}
-        </div>
-       {/* ///////////////////////*/} 
+        {this.state.displayData && !this.state.hassError && (
+          <Map cityName={this.state.cityName} cityData={this.state.cityData} />
+        )}
+        
         {/* ///////////////////////*/}
         {/* Called Weather componets*/}
         {/* ///////////////////////*/}
 
-        <div className="container-weather-card">
+        
           {this.state.displayData &&
             !this.state.hassError &&
-            this.state.weatherData.map((obj) => {
-              return <Weather obj={obj} cityName={this.state.cityName} />;
-            })}
-        </div>
+            <WeatherRender 
+            cityName= {this.state.cityName}
+            weatherData={this.state.weatherData}
+           
+           />}
+          
+
+        
         {/* ///////////////////////*/}
         {/* Called Moives componets*/}
         {/* ///////////////////////*/}
-        <div>
-          {this.state.displayData &&
-            !this.state.hassError &&
-            this.state.moviesData.map((obj) => {
-              return <Movies obj={obj} />;
-            })}
-        </div>
+          <div className="contanire-movies-card">
+        {this.state.showMovies &&
+          !this.state.hassError &&
+          this.state.moviesData.map((obj) => {
+            return <Movies obj={obj} />;
+          })}
+          </div>
       </main>
     );
   }

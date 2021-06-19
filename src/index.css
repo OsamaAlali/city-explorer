@@ -24,22 +24,21 @@ main{
 margin-left: 20px;
 
 }
-main .container-weather-card{
+main #container-weather-card{
   margin-left:10% ;
   border: 2px solid rgb(135, 135, 246);
   border-radius: 10px;
-  width: 74%;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-  
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  -ms-border-radius: 10px;
-  -o-border-radius: 10px;
-  
+  width: 80%;
+ display: flex;
+ flex-flow: row wrap;
+ justify-content: center;
+
 }
+main .container-weather-card .weatherData{
+  width: fit-content;
+    display:inline-block;
+   margin: 10px;
+  }
 main .mapComponent{
  width: 30%;
 height: 500px;
@@ -47,18 +46,20 @@ margin: auto;
 display: block;
 }
 
-main .weatherData{
-width: fit-content;
-  display:inline-block;
- margin: 10px;
-}
  
-main .movies-card{
-  width: 20%;
-  
+ main .contanire-movies-card{
+display: flex;
+flex-direction: row;
+flex-wrap: wrap;
+justify-content: center;
+
+ }
+main .contanire-movies-card .movies-card{
+  width: 30%;
 display: inline-block;
 margin-left: 5px;
 margin-top: 30px;
+align-content: space-around;
 }
 
 footer{
